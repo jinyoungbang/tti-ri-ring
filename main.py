@@ -6,6 +6,7 @@ import json
 import base64
 from secrets import ETRI_ACCESS_KEY
 from modules.utils import is_user_critical
+from modules.messages import send_alert_message
 
 openApiURL = "http://aiopen.etri.re.kr:8000/HumanStatus"
 accessKey = ETRI_ACCESS_KEY
@@ -77,8 +78,8 @@ def main():
             if action == "Lying" and float(confidence) >= 0.70:
                 user_lying_data.append(user_data)
                 if is_user_critical(user_data):
-                    # send user message
-                    pass
+                    send_alert_message()
+                    user_lying_data.clear()
             elif action == "Lying":
                 pass
             else:
