@@ -1,13 +1,14 @@
 from time import time
+from xml.sax import parseString
 import cv2
 import urllib3
 import json
 import base64
 from secrets import ETRI_ACCESS_KEY
+from modules.utils import is_user_critical
 
 openApiURL = "http://aiopen.etri.re.kr:8000/HumanStatus"
 accessKey = ETRI_ACCESS_KEY
-			
 
 def main():
     cam = cv2.VideoCapture(0)
@@ -15,7 +16,7 @@ def main():
     # Initialize variables for time
     previous = time()
     delta = 0
-
+    user_lying_data = []    
     # Continue looping through frame
     while True:
 
@@ -25,7 +26,6 @@ def main():
         previous = current
 
         ret, img = cam.read()
-
         cv2.imshow("frame", img)
         cv2.waitKey(1)
 
@@ -63,10 +63,26 @@ def main():
             x, y, height, width = response_data["x"], response_data["y"], response_data["height"], response_data["width"]
             print("Action: " + action)
             print("Confidence: " + confidence)
-            print("x: " + x)
-            print("y: " + y)
-            print("h: " + height)
-            print("w: " + width)
+            print("x: " + str(x))
+            print("y: " + str(y))
+            print("h: " + str(height))
+            print("w: " + str(width))
+            user_data = {
+                "x": x,
+                "y": y,
+                "h": height,
+                "w": width
+            }
+
+            if action == "Lying" and float(confidence) >= 0.70:
+                user_lying_data.append(user_data)
+                if is_user_critical(user_data):
+                    # send user message
+                    pass
+            elif action == "Lying":
+                pass
+            else:
+                user_lying_data.clear()
 
 if __name__ == '__main__':
     main()
