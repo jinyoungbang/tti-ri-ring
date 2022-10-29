@@ -56,13 +56,17 @@ def main():
                 body=json.dumps(requestJson)
             )
 
-            print("[responseCode] " + str(response.status))
-            print("[responBody]")
-            print(response.data)
-            response_data = response.data["return_object"][0]["data"][1]
+            response = json.loads(response.data)
+            response_data = response["return_object"][0]["data"][1]
             action = response_data["class"]
             confidence = response_data["confidence"]
             x, y, height, width = response_data["x"], response_data["y"], response_data["height"], response_data["width"]
+            print("Action: " + action)
+            print("Confidence: " + confidence)
+            print("x: " + x)
+            print("y: " + y)
+            print("h: " + height)
+            print("w: " + width)
 
 if __name__ == '__main__':
     main()
