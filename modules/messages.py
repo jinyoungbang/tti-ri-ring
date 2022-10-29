@@ -64,6 +64,7 @@ def send_sms(phone_number, subject, message):
     return res.json()
 
 def send_alert_message():
+    print("Running function send_alert_message")
     text = "[띠리링] 피보호자의 움직임이 없어 위험합니다. 연락주세요."
     send_sms(sms_to_number, sms_from_number, text)
     return

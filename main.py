@@ -58,6 +58,9 @@ def main():
             )
 
             response = json.loads(response.data)
+            print(response)
+            # if len(response["return_object"][0]) < 2:
+            #     continue
             response_data = response["return_object"][0]["data"][1]
             action = response_data["class"]
             confidence = response_data["confidence"]
@@ -75,13 +78,15 @@ def main():
                 "w": width
             }
 
-            if action == "Lying" and float(confidence) >= 0.70:
+            if action == "Lying" and float(confidence) >= 0.50:
+                print(user_data)
+                if len(user_lying_data) > 3:
+                    user_lying_data.pop(0)
                 user_lying_data.append(user_data)
                 if is_user_critical(user_data):
+                    print("is_critical")
                     send_alert_message()
                     user_lying_data.clear()
-            elif action == "Lying":
-                pass
             else:
                 user_lying_data.clear()
 
