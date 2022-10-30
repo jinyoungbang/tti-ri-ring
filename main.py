@@ -9,6 +9,7 @@ import numpy as np
 from secrets import ETRI_ACCESS_KEY
 from modules.utils import is_user_critical, reconfirm_user_critical
 from modules.messages import send_alert_message, send_critical_alert_message
+import time
 
 openApiURL = "http://aiopen.etri.re.kr:8000/HumanStatus"
 accessKey = ETRI_ACCESS_KEY
@@ -58,6 +59,8 @@ def main():
             
             if delta > 15:
                 send_critical_alert_message()
+                time.sleep(600)
+                return
                 
 
         if delta > 15 and not is_pending_user_critical:
@@ -116,6 +119,7 @@ def main():
                     user_lying_data.pop(0)
                 user_lying_data.append(user_data)
                 if is_user_critical(user_lying_data):
+                    delta = 0
                     send_alert_message()
                     is_pending_user_critical = True
                     # if reconfirm_user_critical():
