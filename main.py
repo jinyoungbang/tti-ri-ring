@@ -8,7 +8,7 @@ import sounddevice as sd
 import numpy as np
 from secrets import ETRI_ACCESS_KEY
 from modules.utils import is_user_critical, reconfirm_user_critical
-from modules.messages import send_alert_message, send_critical_alert_message
+from modules.messages import send_alert_message, send_critical_alert_message, send_fine_message
 
 openApiURL = "http://aiopen.etri.re.kr:8000/HumanStatus"
 accessKey = ETRI_ACCESS_KEY
@@ -54,8 +54,10 @@ def main():
             if volume_norm > threshold:
                 threshold_above_count += 1
             
-            if threshold_above_count >= 10:
+            if threshold_above_count >= 10 and delta > 14:
                 is_pending_user_critical = False
+                send_fine_message()
+
             
             if delta > 15:
                 if not critical_message_sent:
