@@ -40,6 +40,7 @@ def main():
         current = time()
         delta += current - previous
         previous = current
+        critical_message_sent = False
 
         ret, img = cam.read()
         cv2.imshow("frame", img)
@@ -57,8 +58,10 @@ def main():
                 is_pending_user_critical = False
             
             if delta > 15:
-                send_critical_alert_message()
-                delta = 0
+                if not critical_message_sent:
+                    send_critical_alert_message()
+                    critical_message_sent = True
+                delta = -1000
                 
 
         if delta > 15 and not is_pending_user_critical:
@@ -88,6 +91,9 @@ def main():
             )
 
             response = json.loads(response.data)
+
+            if len(response["return_object"]) < 1 or len(response["return_object"][0]["data"]) < 1:
+                continue
 
             response_data = response["return_object"][0]["data"][1]
 

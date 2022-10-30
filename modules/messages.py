@@ -71,6 +71,6 @@ def send_alert_message():
 
 def send_critical_alert_message():
     print("Running function send_critical_alert_message")
-    text = "[띠리링] Critical Alert -> Sending msg to 119."
+    text = "[띠리링] 피보호자의 생채 반응이 없습니다. 119로 자동 연결됩니다."
     send_sms(sms_to_number, sms_from_number, text)
     return
