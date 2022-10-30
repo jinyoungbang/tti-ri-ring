@@ -1,3 +1,7 @@
+import sounddevice as sd
+import numpy as np
+from time import time
+
 def is_user_critical(user_lying_data):
     print("Running: user_lying_data")
 
@@ -30,3 +34,33 @@ def is_user_critical(user_lying_data):
         return False
     
     return True
+
+def reconfirm_user_critical():
+    CHUNK = 1024  
+    # audio_data = []
+    stream = sd.InputStream()
+    threshold = 6
+    threshold_above_count = 0
+    previous = time()
+    delta = 0
+    while True:
+        current = time()
+        delta += current - previous
+        previous = current
+        stream.start()
+        indata, overflowed = stream.read(CHUNK)
+        volume_norm = np.linalg.norm(indata) * 10
+        if volume_norm > threshold:
+            threshold_above_count += 1
+        
+        if threshold_above_count >= 10:
+            return False
+        
+        if delta > 15:
+            return True
+    
+    return True
+    
+
+    
+

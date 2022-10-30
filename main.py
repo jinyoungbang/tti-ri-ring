@@ -4,12 +4,16 @@ import cv2
 import urllib3
 import json
 import base64
+import sounddevice as sd
+import numpy as np
 from secrets import ETRI_ACCESS_KEY
-from modules.utils import is_user_critical
-from modules.messages import send_alert_message
+from modules.utils import is_user_critical, reconfirm_user_critical
+from modules.messages import send_alert_message, send_critical_alert_message
 
 openApiURL = "http://aiopen.etri.re.kr:8000/HumanStatus"
 accessKey = ETRI_ACCESS_KEY
+IS_PUBLIC_AUTHORITY = True
+
 
 def main():
     cam = cv2.VideoCapture(0)
@@ -18,6 +22,7 @@ def main():
     previous = time()
     delta = 0
     user_lying_data = []    
+
     # Continue looping through frame
     while True:
 
@@ -30,7 +35,6 @@ def main():
         cv2.imshow("frame", img)
         cv2.waitKey(1)
 
-        # Check if 15 seconds passed
         if delta > 15:
 
             # Reset the time counter
@@ -85,6 +89,8 @@ def main():
                 user_lying_data.append(user_data)
                 if is_user_critical(user_lying_data):
                     send_alert_message()
+                    if reconfirm_user_critical():
+                        send_critical_alert_message()
                     user_lying_data.clear()
             else:
                 user_lying_data.clear()
