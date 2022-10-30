@@ -65,7 +65,11 @@ def main():
 
             # if len(response["return_object"][0]) < 2:
             #     continue
+
             response_data = response["return_object"][0]["data"][1]
+            if len(response_data) == 1:
+                print(response_data)
+                continue
             action = response_data["class"]
             confidence = response_data["confidence"]
             x, y, height, width = response_data["x"], response_data["y"], response_data["height"], response_data["width"]
