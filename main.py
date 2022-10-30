@@ -21,7 +21,17 @@ def main():
     # Initialize variables for time
     previous = time()
     delta = 0
-    user_lying_data = []    
+    user_lying_data = []  
+
+
+
+    is_pending_user_critical = False  
+    threshold = 6
+    threshold_above_count = 0
+
+    CHUNK = 1024  
+    # audio_data = []
+    stream = sd.InputStream()
 
     # Continue looping through frame
     while True:
@@ -35,7 +45,22 @@ def main():
         cv2.imshow("frame", img)
         cv2.waitKey(1)
 
-        if delta > 15:
+        
+        if is_pending_user_critical:
+            stream.start()
+            indata, overflowed = stream.read(CHUNK)
+            volume_norm = np.linalg.norm(indata) * 10
+            if volume_norm > threshold:
+                threshold_above_count += 1
+            
+            if threshold_above_count >= 10:
+                is_pending_user_critical = False
+            
+            if delta > 15:
+                send_critical_alert_message()
+                
+
+        if delta > 15 and not is_pending_user_critical:
 
             # Reset the time counter
             delta = 0
@@ -63,13 +88,12 @@ def main():
 
             response = json.loads(response.data)
 
-            # if len(response["return_object"][0]) < 2:
-            #     continue
-
             response_data = response["return_object"][0]["data"][1]
+
             if len(response_data) == 1:
                 print(response_data)
                 continue
+
             action = response_data["class"]
             confidence = response_data["confidence"]
             x, y, height, width = response_data["x"], response_data["y"], response_data["height"], response_data["width"]
@@ -93,8 +117,9 @@ def main():
                 user_lying_data.append(user_data)
                 if is_user_critical(user_lying_data):
                     send_alert_message()
-                    if reconfirm_user_critical():
-                        send_critical_alert_message()
+                    is_pending_user_critical = True
+                    # if reconfirm_user_critical():
+                    #     send_critical_alert_message()
                     user_lying_data.clear()
             else:
                 user_lying_data.clear()
