@@ -37,7 +37,6 @@ def is_user_critical(user_lying_data):
 
 def reconfirm_user_critical():
     CHUNK = 1024  
-    # audio_data = []
     stream = sd.InputStream()
     threshold = 6
     threshold_above_count = 0

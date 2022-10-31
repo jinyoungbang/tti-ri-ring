@@ -2,7 +2,6 @@ import urllib3
 import json
 from secrets import ETRI_ACCESS_KEY
 import cv2
-import numpy as np
 
 def blur_and_send_image(image_data, cv2_image):
     print("Running blurring image process function.")
@@ -20,6 +19,7 @@ def blur_and_send_image(image_data, cv2_image):
         }
     }
 
+    # Pass image data to ETRI api to retrieve coordinates
     http = urllib3.PoolManager()
     response = http.request(
         "POST",
@@ -32,17 +32,15 @@ def blur_and_send_image(image_data, cv2_image):
     face_position_data = response["return_object"]["faces"]
 
     for fp_data in face_position_data:
-        
         img = cv2_image
-
         x, y = fp_data["x"], fp_data["y"]
         w, h = fp_data["width"], fp_data["height"]
 
-        # Grab ROI with Numpy slicing and blur
+        # Blur image with given coordinates and height/width
         ROI = img[y:y+h, x:x+w]
         blur = cv2.GaussianBlur(ROI, (51,51), 0) 
         img[y:y+h, x:x+w] = blur
-    # # Insert ROI back into image
-    # img[y:y+h, x:x+w] = blur
+
+    # Export image to root file
     cv2.imwrite("./out.png", img)
 

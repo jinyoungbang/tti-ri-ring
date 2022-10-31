@@ -1,5 +1,4 @@
-from time import time, sleep
-from xml.sax import parseString
+from time import time
 import cv2
 import urllib3
 import json
@@ -8,14 +7,13 @@ import sounddevice as sd
 import numpy as np
 from secrets import ETRI_ACCESS_KEY
 from modules.image_processing import blur_and_send_image
-from modules.utils import is_user_critical, reconfirm_user_critical
+from modules.utils import is_user_critical
 from modules.messages import send_alert_message, send_critical_alert_message, send_fine_message
 
 
 openApiURL = "http://aiopen.etri.re.kr:8000/HumanStatus"
 accessKey = ETRI_ACCESS_KEY
 IS_PUBLIC_AUTHORITY = True
-
 
 def main():
     cam = cv2.VideoCapture(0)
@@ -24,9 +22,6 @@ def main():
     previous = time()
     delta = 0
     user_lying_data = []  
-
-
-
     is_pending_user_critical = False  
     threshold = 6
     threshold_above_count = 0
@@ -37,7 +32,6 @@ def main():
 
     # Continue looping through frame
     while True:
-
         # Get the current time, increase delta and update the previous variable
         current = time()
         delta += current - previous
@@ -113,6 +107,7 @@ def main():
             action = response_data["class"]
             confidence = response_data["confidence"]
             x, y, height, width = response_data["x"], response_data["y"], response_data["height"], response_data["width"]
+
             print("Action: " + action)
             print("Confidence: " + confidence)
             print("x: " + str(x))
@@ -135,8 +130,6 @@ def main():
                     delta = 0
                     send_alert_message()
                     is_pending_user_critical = True
-                    # if reconfirm_user_critical():
-                    #     send_critical_alert_message()
                     user_lying_data.clear()
             else:
                 user_lying_data.clear()
