@@ -74,3 +74,9 @@ def send_critical_alert_message():
     text = "[띠리링] 피보호자의 생채 반응이 없습니다. 119로 자동 연결됩니다."
     send_sms(sms_to_number, sms_from_number, text)
     return
+
+def send_fine_message():
+    print("Running function send_fine_message")
+    text = "[띠리링] 피보호자의 생채 반응이 감지됐습니다. 혹시 모르니 연락은 취해보세요."
+    send_sms(sms_to_number, sms_from_number, text)
+    return
