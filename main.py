@@ -7,8 +7,10 @@ import base64
 import sounddevice as sd
 import numpy as np
 from secrets import ETRI_ACCESS_KEY
+from modules.image_processing import blur_and_send_image
 from modules.utils import is_user_critical, reconfirm_user_critical
 from modules.messages import send_alert_message, send_critical_alert_message, send_fine_message
+
 
 openApiURL = "http://aiopen.etri.re.kr:8000/HumanStatus"
 accessKey = ETRI_ACCESS_KEY
@@ -62,6 +64,11 @@ def main():
             if delta > 15:
                 if not critical_message_sent:
                     send_critical_alert_message()
+                    retval, buffer = cv2.imencode('.jpg', img)
+                    type = "jpg"
+                    imageContents = base64.b64encode(buffer).decode("utf8")
+
+                    blur_and_send_image(imageContents, img)
                     critical_message_sent = True
                 delta = -1000
                 
