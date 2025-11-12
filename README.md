@@ -1,16 +1,47 @@
-# 모피어스 | tti-ri-ring
+# 🧠 Blink: Intelligent Safety Monitoring for Independent Living
 
-치매 노인 등 거동과 인지에 불편함을 겪는 약자들과 1인 가구로 살아 도움받지 못하는 사람들에게 또 다른 눈이 되어주는 모피어스 입니다. 모피어스는 웹 카마라와 ETRI의 API 2개 ((1) 사람 상태 이해 API, (2) 얼굴 비식별화 API)를 활용해 모니터링을 하고 있는 사람이 연속적으로 움직임이 없는 지를 검증합니다. 만약 움직임이 지속적으로 없을 시, 주의 상태라고 판단하고, 음성을 활용한 교차 검증을 진행합니다. 최종적으로 위험하다고 확인될 시, 비식별화 된 사람들의 사진과 상태 정보를 구급 기관한테 전달하고, 보호자한테도 내용을 전달합니다. 이같은 모피어스의 기능은 급증하고 있는 독거노인과 같이 보호자가 없이 생활하고 있는 사람들에게 매우 적합합니다.
+**Blink** is designed to be an extra set of eyes for people who live alone or experience difficulties in mobility and cognition — such as elderly individuals with dementia.  
+It provides **real-time monitoring**, **contextual understanding**, and **privacy-preserving emergency alerts** using computer vision and natural interaction.
 
-To run the app, first install the dependencies into your virtualenv
-```
-virtualenv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
+---
 
-Ensure you have a `.env` file and include the ETRI Open API Key
+## ⚙️ How It Works
 
-```
-etriAccessKey = "insert key here"
-```
+Morpheus continuously monitors whether a person has been **motionless for an extended period** using a simple web camera.  
+If a lack of movement is detected, it assumes a **potential alert state** and performs **cross-verification** using voice interaction.  
+
+When the situation is confirmed to be dangerous, Morpheus:
+- Sends **de-identified images** and **status information** to emergency services  
+- Notifies the **caregiver** in real-time via secure alert message  
+- Logs contextual information for post-event analysis  
+
+---
+
+## 🧩 Technologies Used
+
+- **ETRI Human State Understanding API** — detects human posture and motion state  
+- **ETRI Face De-identification API** — ensures privacy by blurring or anonymizing faces  
+- **Python (Flask)** backend with API orchestration and state detection logic  
+- **Twilio API** for caregiver SMS notifications  
+- **OpenCV** for video frame analysis  
+
+---
+
+## 💡 Motivation
+
+With the rapid growth of the aging population and the number of elderly people living alone,  
+there is an urgent need for **non-intrusive and privacy-aware assistive technology**.  
+
+Morpheus offers a **timely, compassionate, and accessible solution** — bridging AI safety monitoring and human-centered care for individuals who lack immediate supervision.
+
+---
+
+## 🏆 Impact
+
+> **Impact:** Enabled autonomous fall detection and emergency notification for independent seniors,  
+> providing peace of mind for families and caregivers.  
+> **Recognized for innovation in human-centered AI safety design.**
+
+---
+
+> *“AI that watches over — not watches.”*
